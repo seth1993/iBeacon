@@ -48,7 +48,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="IBeaconItem" id="Xgg-nW-aB2" customClass="IBeaconCell" customModule="iBeacon" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Item" id="Xgg-nW-aB2" customClass="IBeaconCell" customModule="iBeacon" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Xgg-nW-aB2" id="GQo-pr-94f">
@@ -99,7 +99,7 @@
                         <viewLayoutGuide key="safeArea" id="Cwp-2q-9Il"/>
                     </view>
                     <connections>
-                        <outlet property="tableView" destination="iUA-TG-i9J" id="5I1-31-kpY"/>
+                        <outlet property="tableView" destination="iUA-TG-i9J" id="EL8-cp-6Av"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rOe-YU-Zyp" userLabel="First Responder" sceneMemberID="firstResponder"/>

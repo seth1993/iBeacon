@@ -105,6 +105,7 @@
 		654EC921212D02CA00DE989B /* iBeacon */ = {
 			isa = PBXGroup;
 			children = (
+				658E905A2174B76F008C0662 /* Custom Cells */,
 				65C1FD8421553658003C0A81 /* Classes */,
 				65C1FD7D215533FF003C0A81 /* View Controllers */,
 				654EC922212D02CA00DE989B /* AppDelegate.swift */,
@@ -134,6 +135,14 @@
 			path = iBeaconUITests;
 			sourceTree = "<group>";
 		};
+		658E905A2174B76F008C0662 /* Custom Cells */ = {
+			isa = PBXGroup;
+			children = (
+				6504AB4F216B728D003BF85F /* ibeaconCell.swift */,
+			);
+			path = "Custom Cells";
+			sourceTree = "<group>";
+		};
 		65C1FD7D215533FF003C0A81 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -148,7 +157,6 @@
 			isa = PBXGroup;
 			children = (
 				65C1FD8521553689003C0A81 /* ibeacons.swift */,
-				6504AB4F216B728D003BF85F /* ibeaconCell.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";

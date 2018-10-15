@@ -33,7 +33,9 @@ import CoreLocation
 let storedItemsKey = "storedItems"
 
 class ItemsViewController: UIViewController {
+    
     @IBOutlet weak var tableView: UITableView!
+    
     let locationManager = CLLocationManager()
     
     var items = [IBeaconItem]()
@@ -102,14 +104,20 @@ extension ItemsViewController: AddBeacon {
     func addBeacon(item: IBeaconItem) {
         print("In addBeacon method")
         items.append(item)
-        
+
         tableView.beginUpdates()
+        print("In addBeacon metho")
+
         let newIndexPath = IndexPath(row: items.count - 1, section: 0)
+        print("In addBeacon meth")
+
         tableView.insertRows(at: [newIndexPath], with: .automatic)
+        print("In addBeacon meth")
+
         tableView.endUpdates()
         
-        startMonitoringItem(item)
-        persistItems()
+        //startMonitoringItem(item)
+        //persistItems()
     }
 }
 
