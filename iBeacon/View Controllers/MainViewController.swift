@@ -7,13 +7,36 @@
 //
 
 import UIKit
+import CoreLocation
+let storedItemsK = "storedItems"
 
 class MainViewController: UIViewController {
+    
+    var nBeacon:String = "B"
+    var dBeacon:String = "D"
+    var tBeacon:String = "T"
+
+    var items = [IBeaconItem]()
+
+    
+    let locationManager = CLLocationManager()
+    
+    @IBOutlet weak var throwLabel: UILabel!
+    @IBOutlet weak var nameBeacon: UILabel!
+    @IBOutlet weak var distanceBeacon: UILabel!
+    @IBOutlet weak var throwBeacon: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+//        nameBeacon?.text = nBeacon;
+//        distanceBeacon?.text = dBeacon;
+//        throwBeacon?.text = tBeacon;
+        throwLabel?.text = "Throws: "
+        locationManager.requestAlwaysAuthorization()
+        locationManager.delegate = self
+        
+        loadItems()
     }
 
     override func didReceiveMemoryWarning() {
@@ -22,14 +45,67 @@ class MainViewController: UIViewController {
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func loadItems() {
+        print("Loading items")
+        guard let storedItems = UserDefaults.standard.array(forKey: storedItemsK) as? [Data] else { return }
+        for itemData in storedItems {
+            guard let item = NSKeyedUnarchiver.unarchiveObject(with: itemData) as? IBeaconItem else { continue }
+            items.append(item)
+            startMonitoringItem(item)
+            print("In found item")
+            nameBeacon?.text = item.name;
+            distanceBeacon?.text = item.locationString();
+            throwBeacon?.text = String(item.throwsValue);
+            
+        }
     }
-    */
+    
+    func startMonitoringItem(_ item: IBeaconItem) {
+        let beaconRegion = item.asBeaconRegion()
+        locationManager.startMonitoring(for: beaconRegion)
+        locationManager.startRangingBeacons(in: beaconRegion)
+    }
 
+    func stopMonitoringItem(_ item: IBeaconItem) {
+        let beaconRegion = item.asBeaconRegion()
+        locationManager.stopMonitoring(for: beaconRegion)
+        locationManager.stopRangingBeacons(in: beaconRegion)
+    }
 }
+
+extension MainViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
+
+        // Find the same beacons in the table.
+        var indexPaths = [IndexPath]()
+        for beacon in beacons {
+            for row in 0..<items.count {
+                if items[row] == beacon {
+                    print("Beacon Found")
+                    items[row].beacon = beacon
+                    indexPaths += [IndexPath(row: row, section: 0)]
+                    distanceBeacon?.text = items[row].locationString()
+                }
+
+            }
+        }
+
+//        // Update beacon locations of visible rows.
+//        if let visibleRows = tableView.indexPathsForVisibleRows {
+//            let rowsToUpdate = visibleRows.filter { indexPaths.contains($0) }
+//            for row in rowsToUpdate {
+//                let cell = tableView.cellForRow(at: row) as! IBeaconCell
+//                cell.refreshLocation()
+//            }
+//        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
+        print("Failed monitoring region: \(error.localizedDescription)")
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Location manager failed: \(error.localizedDescription)")
+    }
+}
+

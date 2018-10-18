@@ -28,7 +28,7 @@
  */
 
 import UIKit
-import CoreLocation
+//import CoreLocation
 
 let storedItemsKey = "storedItems"
 
@@ -36,15 +36,15 @@ class ItemsViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    let locationManager = CLLocationManager()
+    //let locationManager = CLLocationManager()
     
     var items = [IBeaconItem]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        locationManager.requestAlwaysAuthorization()
-        locationManager.delegate = self
+        //locationManager.requestAlwaysAuthorization()
+        //locationManager.delegate = self
         
         loadItems()
     }
@@ -55,7 +55,7 @@ class ItemsViewController: UIViewController {
         for itemData in storedItems {
             guard let item = NSKeyedUnarchiver.unarchiveObject(with: itemData) as? IBeaconItem else { continue }
             items.append(item)
-            startMonitoringItem(item)
+            //startMonitoringItem(item)
             print("In found item")
         }
     }
@@ -87,37 +87,33 @@ class ItemsViewController: UIViewController {
         //DistanceViewController.index = index
     }
     
-    func startMonitoringItem(_ item: IBeaconItem) {
-        let beaconRegion = item.asBeaconRegion()
-        locationManager.startMonitoring(for: beaconRegion)
-        locationManager.startRangingBeacons(in: beaconRegion)
-    }
-    
-    func stopMonitoringItem(_ item: IBeaconItem) {
-        let beaconRegion = item.asBeaconRegion()
-        locationManager.stopMonitoring(for: beaconRegion)
-        locationManager.stopRangingBeacons(in: beaconRegion)
-    }
+//    func startMonitoringItem(_ item: IBeaconItem) {
+//        let beaconRegion = item.asBeaconRegion()
+//        locationManager.startMonitoring(for: beaconRegion)
+//        locationManager.startRangingBeacons(in: beaconRegion)
+//    }
+//
+//    func stopMonitoringItem(_ item: IBeaconItem) {
+//        let beaconRegion = item.asBeaconRegion()
+//        locationManager.stopMonitoring(for: beaconRegion)
+//        locationManager.stopRangingBeacons(in: beaconRegion)
+//    }
 }
 
 extension ItemsViewController: AddBeacon {
     func addBeacon(item: IBeaconItem) {
-        print("In addBeacon method")
         items.append(item)
 
         tableView.beginUpdates()
-        print("In addBeacon metho")
 
         let newIndexPath = IndexPath(row: items.count - 1, section: 0)
-        print("In addBeacon meth")
 
         tableView.insertRows(at: [newIndexPath], with: .automatic)
-        print("In addBeacon meth")
 
         tableView.endUpdates()
         
         //startMonitoringItem(item)
-        //persistItems()
+        persistItems()
     }
 }
 
@@ -141,11 +137,11 @@ extension ItemsViewController : UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == .delete {
+            //stopMonitoringItem(items[indexPath.row])
             tableView.beginUpdates()
             items.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
             tableView.endUpdates()
-            stopMonitoringItem(items[indexPath.row])
             persistItems()
         }
     }
@@ -164,37 +160,37 @@ extension ItemsViewController: UITableViewDelegate {
     }
 }
 
-extension ItemsViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
-        
-        // Find the same beacons in the table.
-        var indexPaths = [IndexPath]()
-        for beacon in beacons {
-            for row in 0..<items.count {
-                if items[row] == beacon {
-                    items[row].beacon = beacon
-                    indexPaths += [IndexPath(row: row, section: 0)]
-                }
-                
-            }
-        }
-        
-        // Update beacon locations of visible rows.
-        if let visibleRows = tableView.indexPathsForVisibleRows {
-            let rowsToUpdate = visibleRows.filter { indexPaths.contains($0) }
-            for row in rowsToUpdate {
-                let cell = tableView.cellForRow(at: row) as! IBeaconCell
-                cell.refreshLocation()
-            }
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
-        print("Failed monitoring region: \(error.localizedDescription)")
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Location manager failed: \(error.localizedDescription)")
-    }
-}
+//extension ItemsViewController: CLLocationManagerDelegate {
+//    func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
+//
+//        // Find the same beacons in the table.
+//        var indexPaths = [IndexPath]()
+//        for beacon in beacons {
+//            for row in 0..<items.count {
+//                if items[row] == beacon {
+//                    items[row].beacon = beacon
+//                    indexPaths += [IndexPath(row: row, section: 0)]
+//                }
+//
+//            }
+//        }
+//
+//        // Update beacon locations of visible rows.
+//        if let visibleRows = tableView.indexPathsForVisibleRows {
+//            let rowsToUpdate = visibleRows.filter { indexPaths.contains($0) }
+//            for row in rowsToUpdate {
+//                let cell = tableView.cellForRow(at: row) as! IBeaconCell
+//                cell.refreshLocation()
+//            }
+//        }
+//    }
+//
+//    func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
+//        print("Failed monitoring region: \(error.localizedDescription)")
+//    }
+//
+//    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+//        print("Location manager failed: \(error.localizedDescription)")
+//    }
+//}
 

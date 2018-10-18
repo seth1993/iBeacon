@@ -35,6 +35,7 @@ struct ItemConstant {
     static let uuidKey = "uuid"
     static let majorKey = "major"
     static let minorKey = "minor"
+    static let throwKey = "throwsValue"
 }
 
 class IBeaconItem: NSObject, NSCoding {
@@ -43,13 +44,15 @@ class IBeaconItem: NSObject, NSCoding {
     let majorValue: CLBeaconMajorValue
     let minorValue: CLBeaconMinorValue
     var beacon: CLBeacon?
+    let throwsValue: Int
     
     
-    init(name: String, uuid: UUID, majorValue: Int, minorValue: Int) {
+    init(name: String, uuid: UUID, majorValue: Int, minorValue: Int, throwsValue: Int) {
         self.name = name
         self.uuid = uuid
         self.majorValue = CLBeaconMajorValue(majorValue)
         self.minorValue = CLBeaconMinorValue(minorValue)
+        self.throwsValue = throwsValue
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -61,6 +64,7 @@ class IBeaconItem: NSObject, NSCoding {
         
         majorValue = UInt16(aDecoder.decodeInteger(forKey: ItemConstant.majorKey))
         minorValue = UInt16(aDecoder.decodeInteger(forKey: ItemConstant.minorKey))
+        throwsValue = Int(aDecoder.decodeInteger(forKey: ItemConstant.throwKey))
     }
     
     func encode(with aCoder: NSCoder) {
@@ -68,6 +72,7 @@ class IBeaconItem: NSObject, NSCoding {
         aCoder.encode(uuid, forKey: ItemConstant.uuidKey)
         aCoder.encode(Int(majorValue), forKey: ItemConstant.majorKey)
         aCoder.encode(Int(minorValue), forKey: ItemConstant.minorKey)
+        aCoder.encode(Int(throwsValue), forKey: ItemConstant.throwKey)
     }
     
     func asBeaconRegion() -> CLBeaconRegion {
@@ -82,16 +87,16 @@ class IBeaconItem: NSObject, NSCoding {
         case .unknown:
             return "Unknown"
         case .immediate:
-            return "Immediate"
+            return "Less than 15' away"
         case .near:
-            return "Near"
+            return "Less than 3' away"
         case .far:
-            return "Far"
+            return "Over 20' away"
         }
     }
     
     func locationString() -> String {
-        guard let beacon = beacon else { return "Location: Unknown" }
+        guard let beacon = beacon else { return "iBeacon not found" }
         let proximity = nameForProximity(beacon.proximity)
         let accuracy = String(format: "%.2f", beacon.accuracy)
         

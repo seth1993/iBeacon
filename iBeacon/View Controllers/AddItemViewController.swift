@@ -81,7 +81,7 @@ class AddItemViewController: UIViewController {
         let minor = Int(txtMinor.text!) ?? 0
         let name = textName.text!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         
-        let newItem = IBeaconItem(name: name, uuid: uuid, majorValue: major, minorValue: minor)
+        let newItem = IBeaconItem(name: name, uuid: uuid, majorValue: major, minorValue: minor, throwsValue: 0)
         
         delegate?.addBeacon(item: newItem)
         print("Saved Item")
