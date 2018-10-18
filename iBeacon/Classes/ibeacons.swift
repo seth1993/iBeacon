@@ -108,6 +108,20 @@ class IBeaconItem: NSObject, NSCoding {
         return location
     }
     
+    func locationImage() -> String {
+        guard let beacon = beacon else { return "iBeacon not found" }
+        switch beacon.proximity {
+            case .unknown:
+                return "far"
+            case .immediate:
+                return "medium"
+            case .near:
+                return "close"
+            case .far:
+                return "far"
+        }
+    }
+    
 }
 
 

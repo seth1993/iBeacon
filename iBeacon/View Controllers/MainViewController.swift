@@ -21,6 +21,7 @@ class MainViewController: UIViewController {
     
     let locationManager = CLLocationManager()
     
+    @IBOutlet weak var distanceImage: UIImageView!
     @IBOutlet weak var throwLabel: UILabel!
     @IBOutlet weak var nameBeacon: UILabel!
     @IBOutlet weak var distanceBeacon: UILabel!
@@ -85,6 +86,7 @@ extension MainViewController: CLLocationManagerDelegate {
                     items[row].beacon = beacon
                     indexPaths += [IndexPath(row: row, section: 0)]
                     distanceBeacon?.text = items[row].locationString()
+                    distanceImage.image = UIImage(named: items[row].locationImage())
                 }
 
             }
