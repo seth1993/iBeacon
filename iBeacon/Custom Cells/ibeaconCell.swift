@@ -31,23 +31,19 @@ import UIKit
 
 class IBeaconCell: UITableViewCell {
     @IBOutlet weak var lblName: UILabel!
-    @IBOutlet weak var lblLocation: UILabel!
     
     var item: IBeaconItem? = nil {
         didSet {
             if let item = item {
                 lblName.text = item.name
-                lblLocation.text = item.locationString()
-
-                
             } else {
                 lblName.text = ""
-                lblLocation.text = ""
+                //lblLocation.text = ""
             }
         }
     }
     
     func refreshLocation() {
-        lblLocation.text = item?.locationString() ?? ""
+        //lblLocation.text = item?.locationString() ?? ""
     }
 }

@@ -36,6 +36,7 @@ struct ItemConstant {
     static let majorKey = "major"
     static let minorKey = "minor"
     static let throwKey = "throwsValue"
+    static let lastDistance = "lastDistance"
 }
 
 class IBeaconItem: NSObject, NSCoding {
@@ -44,15 +45,17 @@ class IBeaconItem: NSObject, NSCoding {
     let majorValue: CLBeaconMajorValue
     let minorValue: CLBeaconMinorValue
     var beacon: CLBeacon?
-    let throwsValue: Int
+    var throwsValue: Int
+    var lastDistance: Double
     
     
-    init(name: String, uuid: UUID, majorValue: Int, minorValue: Int, throwsValue: Int) {
+    init(name: String, uuid: UUID, majorValue: Int, minorValue: Int, throwsValue: Int, lastDistance: Double) {
         self.name = name
         self.uuid = uuid
         self.majorValue = CLBeaconMajorValue(majorValue)
         self.minorValue = CLBeaconMinorValue(minorValue)
         self.throwsValue = throwsValue
+        self.lastDistance = lastDistance
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -65,6 +68,7 @@ class IBeaconItem: NSObject, NSCoding {
         majorValue = UInt16(aDecoder.decodeInteger(forKey: ItemConstant.majorKey))
         minorValue = UInt16(aDecoder.decodeInteger(forKey: ItemConstant.minorKey))
         throwsValue = Int(aDecoder.decodeInteger(forKey: ItemConstant.throwKey))
+        lastDistance = Double(aDecoder.decodeDouble(forKey: ItemConstant.lastDistance))
     }
     
     func encode(with aCoder: NSCoder) {
@@ -73,6 +77,7 @@ class IBeaconItem: NSObject, NSCoding {
         aCoder.encode(Int(majorValue), forKey: ItemConstant.majorKey)
         aCoder.encode(Int(minorValue), forKey: ItemConstant.minorKey)
         aCoder.encode(Int(throwsValue), forKey: ItemConstant.throwKey)
+        aCoder.encode(Double(lastDistance), forKey: ItemConstant.lastDistance)
     }
     
     func asBeaconRegion() -> CLBeaconRegion {
@@ -85,22 +90,22 @@ class IBeaconItem: NSObject, NSCoding {
     func nameForProximity(_ proximity: CLProximity) -> String {
         switch proximity {
         case .unknown:
-            return "Unknown"
+            return "Not Found"
         case .immediate:
-            return "Less than 15' away"
-        case .near:
             return "Less than 3' away"
+        case .near:
+            return "Less than 10' away"
         case .far:
             return "Over 20' away"
         }
     }
     
     func locationString() -> String {
-        guard let beacon = beacon else { return "iBeacon not found" }
+        guard let beacon = beacon else { return "Not Found" }
         let proximity = nameForProximity(beacon.proximity)
         let accuracy = String(format: "%.2f", beacon.accuracy)
         
-        var location = "Location: \(proximity)"
+        var location = "\(proximity)"
         if beacon.proximity != .unknown {
             location += " (approx. \(accuracy)m)"
         }
@@ -109,7 +114,7 @@ class IBeaconItem: NSObject, NSCoding {
     }
     
     func locationImage() -> String {
-        guard let beacon = beacon else { return "iBeacon not found" }
+        guard let beacon = beacon else { return "close" }
         switch beacon.proximity {
             case .unknown:
                 return "far"
@@ -122,6 +127,18 @@ class IBeaconItem: NSObject, NSCoding {
         }
     }
     
+    func didThrow(lastvalue: Double) -> Bool {
+        guard let beacon = beacon else { return false }
+        if(beacon.accuracy > lastvalue + 0.5) {
+            return true;
+        }
+        return false
+    }
+    
+    func accuracyDistance() -> Double {
+        guard let beacon = beacon else { return 0 }
+        return beacon.accuracy
+    }
 }
 
 

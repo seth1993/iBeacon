@@ -11,10 +11,6 @@ import CoreLocation
 let storedItemsK = "storedItems"
 
 class MainViewController: UIViewController {
-    
-    var nBeacon:String = "B"
-    var dBeacon:String = "D"
-    var tBeacon:String = "T"
 
     var items = [IBeaconItem]()
 
@@ -30,9 +26,7 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        nameBeacon?.text = nBeacon;
-//        distanceBeacon?.text = dBeacon;
-//        throwBeacon?.text = tBeacon;
+
         throwLabel?.text = "Throws: "
         locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
@@ -87,6 +81,12 @@ extension MainViewController: CLLocationManagerDelegate {
                     indexPaths += [IndexPath(row: row, section: 0)]
                     distanceBeacon?.text = items[row].locationString()
                     distanceImage.image = UIImage(named: items[row].locationImage())
+                    if(items[row].didThrow(lastvalue: items[row].lastDistance)){
+                        items[row].throwsValue += 1
+                        throwLabel?.text = "\(items[row].throwsValue)"
+                        print("Threw IBeacon")
+                    }
+                    items[row].lastDistance = items[row].accuracyDistance()
                 }
 
             }
