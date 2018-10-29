@@ -30,7 +30,16 @@ class MainViewController: UIViewController {
         throwLabel?.text = "Throws: "
         locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
-        
+        NotificationCenter.default.addObserver(self, selector: "backgroundNotification:", name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil);
+
+        loadItems()
+    }
+    
+    func backgoundNofification(noftification:NSNotification){
+        loadItems()
+    }
+    
+    func refresh() {
         loadItems()
     }
 
@@ -83,7 +92,7 @@ extension MainViewController: CLLocationManagerDelegate {
                     distanceImage.image = UIImage(named: items[row].locationImage())
                     if(items[row].didThrow(lastvalue: items[row].lastDistance)){
                         items[row].throwsValue += 1
-                        throwLabel?.text = "\(items[row].throwsValue)"
+                        throwBeacon?.text = "\(items[row].throwsValue)"
                         print("Threw IBeacon")
                     }
                     items[row].lastDistance = items[row].accuracyDistance()

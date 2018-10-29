@@ -129,7 +129,7 @@ class IBeaconItem: NSObject, NSCoding {
     
     func didThrow(lastvalue: Double) -> Bool {
         guard let beacon = beacon else { return false }
-        if(beacon.accuracy > lastvalue + 0.5) {
+        if(beacon.accuracy > lastvalue + 0.05) {
             return true;
         }
         return false
